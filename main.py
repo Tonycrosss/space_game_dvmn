@@ -24,9 +24,20 @@ def draw(canvas):
     curses.curs_set(0)
     canvas.border()
     # star = "*"
-    coroutine = blink(canvas, row, column)
+    star_1 = blink(canvas, row, column)
+    star_2 = blink(canvas, row, 21)
+    star_3 = blink(canvas, row, 22)
+    star_4 = blink(canvas, row, 23)
+    star_5 = blink(canvas, row, 24)
+    coroutines = [star_1, star_2, star_3, star_4, star_5]
     while True:
-        coroutine.send(None)
+        for coroutine in coroutines:
+            try:
+                coroutine.send(None)
+            except StopIteration:
+                coroutines.remove(coroutine)
+        if len(coroutines) == 0:
+            break
         canvas.refresh()
         time.sleep(1)
         # canvas.addstr(row, column, star, curses.A_DIM)
