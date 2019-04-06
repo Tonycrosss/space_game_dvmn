@@ -8,6 +8,37 @@ import random
 STARS = ["+", "*", ".", ":"]
 
 
+async def fire(canvas, start_row, start_column, rows_speed=-0.3,
+               columns_speed=0):
+    """Display animation of gun shot. Direction and speed can be specified."""
+
+    row, column = start_row, start_column
+
+    canvas.addstr(round(row), round(column), '*')
+    await asyncio.sleep(0)
+
+    canvas.addstr(round(row), round(column), 'O')
+    await asyncio.sleep(0)
+    canvas.addstr(round(row), round(column), ' ')
+
+    row += rows_speed
+    column += columns_speed
+
+    symbol = '-' if columns_speed else '|'
+
+    rows, columns = canvas.getmaxyx()
+    max_row, max_column = rows - 1, columns - 1
+
+    curses.beep()
+
+    while 0 < row < max_row and 0 < column < max_column:
+        canvas.addstr(round(row), round(column), symbol)
+        await asyncio.sleep(0)
+        canvas.addstr(round(row), round(column), ' ')
+        row += rows_speed
+        column += columns_speed
+
+
 async def blink(canvas, row, column, symbol='*'):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
@@ -34,7 +65,6 @@ async def blink(canvas, row, column, symbol='*'):
         # await asyncio.sleep(0)
         for _ in range(random.randint(0, 10)):
             await asyncio.sleep(0)
-
         canvas.addstr(row, column, symbol)
         for _ in range(3):
             await asyncio.sleep(0)
@@ -68,10 +98,13 @@ def draw(canvas):
     # star = "*"
     coroutines = []
     for star in range(50):
-        star = blink(canvas, row=random.choice(rows), column=random.choice(columns), symbol=random.choice(STARS))
+        star = blink(canvas, row=random.choice(rows),
+                     column=random.choice(columns),
+                     symbol=random.choice(STARS))
         coroutines.append(star)
         # column += 1
-
+    shot = fire(canvas, start_row=18, start_column=38)
+    coroutines.append(shot)
     # star_1 = blink(canvas, row, column)
     # star_2 = blink(canvas, row, 21)
     # star_3 = blink(canvas, row, 22)
@@ -79,6 +112,8 @@ def draw(canvas):
     # star_5 = blink(canvas, row, 24)
     # coroutines = [star_1, star_2, star_3, star_4, star_5]
     while True:
+        tics = [2, 0.3, 0.5, 1]
+        # for tic in tics:
         for coroutine in coroutines:
             try:
                 coroutine.send(None)
@@ -86,19 +121,20 @@ def draw(canvas):
                 coroutines.remove(coroutine)
         if len(coroutines) == 0:
             break
+
         canvas.refresh()
         time.sleep(0.1)
-            # canvas.addstr(row, column, star, curses.A_DIM)
-            # canvas.refresh()
-            # time.sleep(2)
-            # canvas.addstr(row, column, star)
-            # canvas.refresh()
-            # time.sleep(0.3)
-            # canvas.addstr(row, column, star, curses.A_BOLD)
-            # canvas.refresh()
-            # time.sleep(0.5)
-            # canvas.addstr(row, column, star)
-            # canvas.refresh()
+        # canvas.addstr(row, column, star, curses.A_DIM)
+        # canvas.refresh()
+        # time.sleep(2)
+        # canvas.addstr(row, column, star)
+        # canvas.refresh()
+        # time.sleep(0.3)
+        # canvas.addstr(row, column, star, curses.A_BOLD)
+        # canvas.refresh()
+        # time.sleep(0.5)
+        # canvas.addstr(row, column, star)
+        # canvas.refresh()
 
 
 if __name__ == '__main__':
