@@ -3,6 +3,7 @@ from curses import wrapper
 import curses
 import asyncio
 import random
+from tools import draw_frame
 
 # STARS = "+*.:"
 STARS = ["+", "*", ".", ":"]
@@ -45,7 +46,18 @@ async def animate_spaceship(canvas, row, column):
     with open("./rocket_frame_2.txt", "r") as f:
         frame_2 = f.read()
     while True:
-        canvas.draw_frame()
+        draw_frame(canvas, start_row=row, start_column=column, text=frame_1)
+        canvas.refresh()
+
+        await asyncio.sleep(0)
+
+        # стираем предыдущий кадр, прежде чем рисовать новый
+        draw_frame(canvas, row, column, text=frame_1, negative=True)
+        draw_frame(canvas, row, column, text=frame_2)
+        canvas.refresh()
+
+        await asyncio.sleep(0)
+
 
 async def blink(canvas, row, column, symbol='*'):
     while True:
@@ -111,8 +123,10 @@ def draw(canvas):
                      symbol=random.choice(STARS))
         coroutines.append(star)
         # column += 1
-    shot = fire(canvas, start_row=18, start_column=38)
-    coroutines.append(shot)
+    # shot = fire(canvas, start_row=18, start_column=38)
+    # coroutines.append(shot)
+    space_ship = animate_spaceship(canvas, row=9, column=38)
+    coroutines.append(space_ship)
     # star_1 = blink(canvas, row, column)
     # star_2 = blink(canvas, row, 21)
     # star_3 = blink(canvas, row, 22)
