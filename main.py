@@ -39,6 +39,9 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3,
         column += columns_speed
 
 
+async def animate_spaceship(canvas, row, column):
+    pass
+
 async def blink(canvas, row, column, symbol='*'):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
