@@ -24,12 +24,18 @@ def draw(canvas):
     curses.curs_set(0)
     canvas.border()
     # star = "*"
-    star_1 = blink(canvas, row, column)
-    star_2 = blink(canvas, row, 21)
-    star_3 = blink(canvas, row, 22)
-    star_4 = blink(canvas, row, 23)
-    star_5 = blink(canvas, row, 24)
-    coroutines = [star_1, star_2, star_3, star_4, star_5]
+    coroutines = []
+    for star in range(5):
+      star = blink(canvas, row, column)
+      coroutines.append(star)
+      column += 1
+
+    # star_1 = blink(canvas, row, column)
+    # star_2 = blink(canvas, row, 21)
+    # star_3 = blink(canvas, row, 22)
+    # star_4 = blink(canvas, row, 23)
+    # star_5 = blink(canvas, row, 24)
+    # coroutines = [star_1, star_2, star_3, star_4, star_5]
     while True:
         for coroutine in coroutines:
             try:
