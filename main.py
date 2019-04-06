@@ -32,6 +32,8 @@ async def blink(canvas, row, column, symbol='*'):
         # await asyncio.sleep(0)
         # await asyncio.sleep(0)
         # await asyncio.sleep(0)
+        for _ in range(random.randint(0, 10)):
+            await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol)
         for _ in range(3):
@@ -77,7 +79,7 @@ def draw(canvas):
     # star_5 = blink(canvas, row, 24)
     # coroutines = [star_1, star_2, star_3, star_4, star_5]
     while True:
-        # tics = [2, 0.3, 0.5, 1]
+        tics = [2, 0.3, 0.5, 1]
         # for tic in tics:
         for coroutine in coroutines:
             try:
