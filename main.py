@@ -7,16 +7,49 @@ import asyncio
 async def blink(canvas, row, column, symbol='*'):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
-        await asyncio.sleep(0)
+        for _ in range(20):
+            await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol)
-        await asyncio.sleep(0)
+        for _ in range(3):
+            await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol, curses.A_BOLD)
-        await asyncio.sleep(0)
+        for _ in range(5):
+            await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol)
-        await asyncio.sleep(0)
+        for _ in range(3):
+            await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
+        # await asyncio.sleep(0)
 
 
 def draw(canvas):
@@ -26,9 +59,9 @@ def draw(canvas):
     # star = "*"
     coroutines = []
     for star in range(5):
-      star = blink(canvas, row, column)
-      coroutines.append(star)
-      column += 1
+        star = blink(canvas, row, column)
+        coroutines.append(star)
+        column += 1
 
     # star_1 = blink(canvas, row, column)
     # star_2 = blink(canvas, row, 21)
@@ -37,6 +70,8 @@ def draw(canvas):
     # star_5 = blink(canvas, row, 24)
     # coroutines = [star_1, star_2, star_3, star_4, star_5]
     while True:
+        # tics = [2, 0.3, 0.5, 1]
+        # for tic in tics:
         for coroutine in coroutines:
             try:
                 coroutine.send(None)
@@ -45,18 +80,18 @@ def draw(canvas):
         if len(coroutines) == 0:
             break
         canvas.refresh()
-        time.sleep(1)
-        # canvas.addstr(row, column, star, curses.A_DIM)
-        # canvas.refresh()
-        # time.sleep(2)
-        # canvas.addstr(row, column, star)
-        # canvas.refresh()
-        # time.sleep(0.3)
-        # canvas.addstr(row, column, star, curses.A_BOLD)
-        # canvas.refresh()
-        # time.sleep(0.5)
-        # canvas.addstr(row, column, star)
-        # canvas.refresh()
+        time.sleep(0.1)
+            # canvas.addstr(row, column, star, curses.A_DIM)
+            # canvas.refresh()
+            # time.sleep(2)
+            # canvas.addstr(row, column, star)
+            # canvas.refresh()
+            # time.sleep(0.3)
+            # canvas.addstr(row, column, star, curses.A_BOLD)
+            # canvas.refresh()
+            # time.sleep(0.5)
+            # canvas.addstr(row, column, star)
+            # canvas.refresh()
 
 
 if __name__ == '__main__':
