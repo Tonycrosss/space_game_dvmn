@@ -79,8 +79,6 @@ def draw(canvas):
     # star_5 = blink(canvas, row, 24)
     # coroutines = [star_1, star_2, star_3, star_4, star_5]
     while True:
-        tics = [2, 0.3, 0.5, 1]
-        # for tic in tics:
         for coroutine in coroutines:
             try:
                 coroutine.send(None)
