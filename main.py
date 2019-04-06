@@ -4,7 +4,7 @@ import curses
 import asyncio
 import random
 from tools import draw_frame
-
+from tools import read_controls
 # STARS = "+*.:"
 STARS = ["+", "*", ".", ":"]
 
@@ -40,12 +40,11 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3,
         column += columns_speed
 
 
-async def animate_spaceship(canvas, row, column):
-    with open("./rocket_frame_1.txt", "r") as f:
-        frame_1 = f.read()
-    with open("./rocket_frame_2.txt", "r") as f:
-        frame_2 = f.read()
+async def animate_spaceship(canvas, row, column, frame_1, frame_2):
     while True:
+        row_direction, column_direction, space_pressed = read_controls(canvas)
+        row = row + row_direction
+        column = column + column_direction
         draw_frame(canvas, start_row=row, start_column=column, text=frame_1)
         canvas.refresh()
 
@@ -58,6 +57,7 @@ async def animate_spaceship(canvas, row, column):
 
         await asyncio.sleep(0)
 
+        draw_frame(canvas, row, column, text=frame_2, negative=True)
 
 async def blink(canvas, row, column, symbol='*'):
     while True:
@@ -109,6 +109,7 @@ async def blink(canvas, row, column, symbol='*'):
 
 
 def draw(canvas):
+    canvas.nodelay(True)
     max_y, max_x = canvas.getmaxyx()
     columns = [x for x in range(1, max_x - 1)]
     rows = [y for y in range(1, max_y - 1)]
@@ -125,17 +126,26 @@ def draw(canvas):
         # column += 1
     # shot = fire(canvas, start_row=18, start_column=38)
     # coroutines.append(shot)
-    space_ship = animate_spaceship(canvas, row=9, column=38)
-    coroutines.append(space_ship)
+    with open("./rocket_frame_1.txt", "r") as f:
+        frame_1 = f.read()
+    with open("./rocket_frame_2.txt", "r") as f:
+        frame_2 = f.read()
+    # space_ship = animate_spaceship(canvas, row=9, column=38, frame_1=frame_1, frame_2=frame_2)
+    # coroutines.append(space_ship)
     # star_1 = blink(canvas, row, column)
     # star_2 = blink(canvas, row, 21)
     # star_3 = blink(canvas, row, 22)
     # star_4 = blink(canvas, row, 23)
     # star_5 = blink(canvas, row, 24)
     # coroutines = [star_1, star_2, star_3, star_4, star_5]
+    spaceship_row = 9
+    spaceship_column = 38
+    space_ship = animate_spaceship(canvas, row=spaceship_row,
+                                   column=spaceship_column,
+                                   frame_1=frame_1, frame_2=frame_2)
+    coroutines.append(space_ship)
+
     while True:
-        tics = [2, 0.3, 0.5, 1]
-        # for tic in tics:
         for coroutine in coroutines:
             try:
                 coroutine.send(None)
@@ -143,7 +153,6 @@ def draw(canvas):
                 coroutines.remove(coroutine)
         if len(coroutines) == 0:
             break
-
         canvas.refresh()
         time.sleep(0.1)
         # canvas.addstr(row, column, star, curses.A_DIM)
