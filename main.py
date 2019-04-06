@@ -40,7 +40,12 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3,
 
 
 async def animate_spaceship(canvas, row, column):
-    pass
+    with open("./rocket_frame_1.txt", "r") as f:
+        frame_1 = f.read()
+    with open("./rocket_frame_2.txt", "r") as f:
+        frame_2 = f.read()
+    while True:
+        canvas.draw_frame()
 
 async def blink(canvas, row, column, symbol='*'):
     while True:
