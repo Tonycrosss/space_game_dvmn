@@ -5,6 +5,7 @@ import asyncio
 import random
 from tools import draw_frame
 from tools import read_controls
+from tools import get_frame_size
 # STARS = "+*.:"
 STARS = ["+", "*", ".", ":"]
 
@@ -41,23 +42,63 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3,
 
 
 async def animate_spaceship(canvas, row, column, frame_1, frame_2):
+    # 19, 77
+    max_row, max_column = canvas.getmaxyx()
+    min_row, min_column = 0, 0
+    space_ship_row, space_ship_column = get_frame_size(frame_1)
+
     while True:
+        old_row = row
+        old_column = column
         row_direction, column_direction, space_pressed = read_controls(canvas)
         row = row + row_direction
         column = column + column_direction
-        draw_frame(canvas, start_row=row, start_column=column, text=frame_1)
-        canvas.refresh()
+        spaceship_left_upper_point = (row, column)
+        spaceship_right_upper_point = (row, column + space_ship_column)
+        spaceship_left_lower_point = (row + space_ship_row, column)
+        spaceship_right_lower_point = (row + space_ship_row, column + space_ship_column)
+        space_points = [spaceship_left_upper_point,
+                        spaceship_right_upper_point,
+                        spaceship_left_lower_point,
+                        spaceship_right_lower_point]
+        is_border = False
+        for point in space_points:
+            point_row, point_column = point
+            if point_row >= max_row or point_row <= min_row or point_column >= max_column or point_column <= min_column:
+                is_border = True
+                row = old_row
+                column = old_column
+        if not is_border:
+            draw_frame(canvas, start_row=row, start_column=column, text=frame_1)
+            canvas.refresh()
 
-        await asyncio.sleep(0)
+            await asyncio.sleep(0)
 
-        # стираем предыдущий кадр, прежде чем рисовать новый
-        draw_frame(canvas, row, column, text=frame_1, negative=True)
-        draw_frame(canvas, row, column, text=frame_2)
-        canvas.refresh()
+            # стираем предыдущий кадр, прежде чем рисовать новый
+            draw_frame(canvas, row, column, text=frame_1, negative=True)
+            draw_frame(canvas, row, column, text=frame_2)
+            canvas.refresh()
 
-        await asyncio.sleep(0)
+            await asyncio.sleep(0)
 
-        draw_frame(canvas, row, column, text=frame_2, negative=True)
+            draw_frame(canvas, row, column, text=frame_2, negative=True)
+        # else:
+        #     draw_frame(canvas, start_row=row, start_column=column,
+        #                text=frame_1)
+        #     canvas.refresh()
+        #
+        #     await asyncio.sleep(0)
+        #
+        #     # стираем предыдущий кадр, прежде чем рисовать новый
+        #     draw_frame(canvas, row, column, text=frame_1,
+        #                negative=True)
+        #     draw_frame(canvas, row, column, text=frame_2)
+        #     canvas.refresh()
+        #
+        #     await asyncio.sleep(0)
+        #
+        #     draw_frame(canvas, row, column, text=frame_2,
+        #                negative=True)
 
 async def blink(canvas, row, column, symbol='*'):
     while True:
