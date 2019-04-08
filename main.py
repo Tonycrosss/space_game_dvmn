@@ -114,8 +114,8 @@ def draw(canvas):
     curses.curs_set(0)
     canvas.border()
     coroutines = []
-    offset_tic = random.randint(0, 10)
     for star in range(50):
+        offset_tic = random.randint(0, 10)
         star = blink(canvas, row=random.choice(rows),
                      column=random.choice(columns),
                      symbol=random.choice(STARS),
