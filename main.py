@@ -84,13 +84,13 @@ async def animate_spaceship(canvas, row, column, frame_1, frame_2):
             draw_frame(canvas, row, column, text=frame_2, negative=True)
 
 
-async def blink(canvas, row, column, symbol='*'):
+async def blink(canvas, row, column, offset_tic, symbol='*', ):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
         for _ in range(20):
             await asyncio.sleep(0)
 
-        for _ in range(random.randint(0, 10)):
+        for _ in range(offset_tic):
             await asyncio.sleep(0)
         canvas.addstr(row, column, symbol)
 
@@ -114,10 +114,12 @@ def draw(canvas):
     curses.curs_set(0)
     canvas.border()
     coroutines = []
+    offset_tic = random.randint(0, 10)
     for star in range(50):
         star = blink(canvas, row=random.choice(rows),
                      column=random.choice(columns),
-                     symbol=random.choice(STARS))
+                     symbol=random.choice(STARS),
+                     offset_tic=offset_tic)
         coroutines.append(star)
 
     with open("./rocket_frame_1.txt", "r") as f:
@@ -132,14 +134,12 @@ def draw(canvas):
                                    frame_1=frame_1, frame_2=frame_2)
     coroutines.append(space_ship)
 
-    while True:
+    while coroutines:
         for coroutine in coroutines:
             try:
                 coroutine.send(None)
             except StopIteration:
                 coroutines.remove(coroutine)
-        if len(coroutines) == 0:
-            break
         canvas.refresh()
         time.sleep(0.1)
 
