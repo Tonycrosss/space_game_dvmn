@@ -10,6 +10,22 @@ from tools import get_frame_size
 STARS = ["+", "*", ".", ":"]
 
 
+async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
+    """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
+    rows_number, columns_number = canvas.getmaxyx()
+
+    column = max(column, 0)
+    column = min(column, columns_number - 1)
+
+    row = 0
+
+    while row < rows_number:
+        draw_frame(canvas, row, column, garbage_frame)
+        await asyncio.sleep(0)
+        draw_frame(canvas, row, column, garbage_frame, negative=True)
+        row += speed
+
+
 async def fire(canvas, start_row, start_column, rows_speed=-0.3,
                columns_speed=0):
     """Display animation of gun shot. Direction and speed can be specified."""
@@ -120,10 +136,21 @@ def draw(canvas):
                      symbol=random.choice(STARS))
         coroutines.append(star)
 
-    with open("./rocket_frame_1.txt", "r") as f:
+    with open("./frames/rocket_frame_1.txt", "r") as f:
         frame_1 = f.read()
-    with open("./rocket_frame_2.txt", "r") as f:
+    with open("./frames/rocket_frame_2.txt", "r") as f:
         frame_2 = f.read()
+
+    # garbage
+
+    with open("./frames/garbage_frame_1.txt", "r") as f:
+        garbage_frame_1 = f.read()
+    with open("./frames/garbage_frame_2.txt", "r") as f:
+        garbage_frame_2 = f.read()
+    with open("./frames/garbage_frame_3.txt", "r") as f:
+        garbage_frame_3 = f.read()
+
+
 
     spaceship_row = 9
     spaceship_column = 38
