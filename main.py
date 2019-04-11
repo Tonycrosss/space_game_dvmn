@@ -6,6 +6,7 @@ import random
 from tools import draw_frame
 from tools import read_controls
 from tools import get_frame_size
+from physics import update_speed
 
 STARS = ["+", "*", ".", ":"]
 coroutines = []
