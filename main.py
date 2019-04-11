@@ -143,8 +143,8 @@ def draw(canvas):
     with open("./frames/rocket_frame_2.txt", "r") as f:
         frame_2 = f.read()
 
-    # garbage
 
+    # garbage
     with open("./frames/garbage_frame_1.txt", "r") as f:
         garbage_frame_1 = f.read()
     with open("./frames/garbage_frame_2.txt", "r") as f:
@@ -153,6 +153,8 @@ def draw(canvas):
         garbage_frame_3 = f.read()
 
 
+    garbage_1 = fly_garbage(canvas, 10, garbage_frame_1)
+    coroutines.append(garbage_1)
 
     spaceship_row = 9
     spaceship_column = 38
@@ -160,6 +162,8 @@ def draw(canvas):
                                    column=spaceship_column,
                                    frame_1=frame_1, frame_2=frame_2)
     coroutines.append(space_ship)
+
+
 
     while coroutines:
         for coroutine in coroutines:
