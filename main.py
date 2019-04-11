@@ -8,7 +8,7 @@ from tools import read_controls
 from tools import get_frame_size
 
 STARS = ["+", "*", ".", ":"]
-
+coroutines = []
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
@@ -24,6 +24,27 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, garbage_frame, negative=True)
         row += speed
+
+
+async def fill_orbit_with_garbage(canvas):
+    global coroutines
+    # garbage
+    with open("./garbage_frame_1.txt", "r") as f:
+        garbage_frame_1 = f.read()
+    with open("./garbage_frame_2.txt", "r") as f:
+        garbage_frame_2 = f.read()
+    with open("./garbage_frame_3.txt", "r") as f:
+        garbage_frame_3 = f.read()
+
+    garbage_list = [garbage_frame_1, garbage_frame_2, garbage_frame_3]
+
+    while True:
+        random_garbage = random.choice(garbage_list)
+        for _ in range(20):
+            await asyncio.sleep(0)
+        coroutines.append(fly_garbage(canvas, 10, random_garbage))
+        # coroutines.append(random_garbage_start)
+
 
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3,
@@ -123,13 +144,14 @@ async def blink(canvas, row, column, offset_tic, symbol='*', ):
 
 
 def draw(canvas):
+    global coroutines
     canvas.nodelay(True)
     max_y, max_x = canvas.getmaxyx()
     columns = [x for x in range(1, max_x - 1)]
     rows = [y for y in range(1, max_y - 1)]
     curses.curs_set(0)
     canvas.border()
-    coroutines = []
+
     for star in range(50):
         offset_tic = random.randint(0, 10)
         star = blink(canvas, row=random.choice(rows),
@@ -138,23 +160,13 @@ def draw(canvas):
                      offset_tic=offset_tic)
         coroutines.append(star)
 
-    with open("./frames/rocket_frame_1.txt", "r") as f:
+    with open("./rocket_frame_1.txt", "r") as f:
         frame_1 = f.read()
-    with open("./frames/rocket_frame_2.txt", "r") as f:
+    with open("./rocket_frame_2.txt", "r") as f:
         frame_2 = f.read()
 
 
-    # garbage
-    with open("./frames/garbage_frame_1.txt", "r") as f:
-        garbage_frame_1 = f.read()
-    with open("./frames/garbage_frame_2.txt", "r") as f:
-        garbage_frame_2 = f.read()
-    with open("./frames/garbage_frame_3.txt", "r") as f:
-        garbage_frame_3 = f.read()
-
-
-    garbage_1 = fly_garbage(canvas, 10, garbage_frame_1)
-    coroutines.append(garbage_1)
+    coroutines.append(fill_orbit_with_garbage(canvas))
 
     spaceship_row = 9
     spaceship_column = 38
@@ -162,8 +174,6 @@ def draw(canvas):
                                    column=spaceship_column,
                                    frame_1=frame_1, frame_2=frame_2)
     coroutines.append(space_ship)
-
-
 
     while coroutines:
         for coroutine in coroutines:
