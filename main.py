@@ -10,6 +10,12 @@ from tools import get_frame_size
 STARS = ["+", "*", ".", ":"]
 coroutines = []
 
+
+async def sleep(tics=1):
+    for _ in range(0, tics):
+        await asyncio.sleep(0)
+
+
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
     rows_number, columns_number = canvas.getmaxyx()
@@ -21,7 +27,7 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
     while row < rows_number:
         draw_frame(canvas, row, column, garbage_frame)
-        await asyncio.sleep(0)
+        await sleep()
         draw_frame(canvas, row, column, garbage_frame, negative=True)
         row += speed
 
@@ -39,10 +45,10 @@ async def fill_orbit_with_garbage(canvas):
     garbage_list = [garbage_frame_1, garbage_frame_2, garbage_frame_3]
 
     while True:
+        random_column = random.randint(0, 60)
         random_garbage = random.choice(garbage_list)
-        for _ in range(20):
-            await asyncio.sleep(0)
-        coroutines.append(fly_garbage(canvas, 10, random_garbage))
+        await sleep(20)
+        coroutines.append(fly_garbage(canvas, random_column, random_garbage))
         # coroutines.append(random_garbage_start)
 
 
@@ -54,10 +60,10 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3,
     row, column = start_row, start_column
 
     canvas.addstr(round(row), round(column), '*')
-    await asyncio.sleep(0)
+    await sleep()
 
     canvas.addstr(round(row), round(column), 'O')
-    await asyncio.sleep(0)
+    await sleep()
     canvas.addstr(round(row), round(column), ' ')
 
     row += rows_speed
@@ -109,14 +115,14 @@ async def animate_spaceship(canvas, row, column, frame_1, frame_2):
             draw_frame(canvas, start_row=row, start_column=column, text=frame_1)
             canvas.refresh()
 
-            await asyncio.sleep(0)
+            await sleep()
 
             # стираем предыдущий кадр, прежде чем рисовать новый
             draw_frame(canvas, row, column, text=frame_1, negative=True)
             draw_frame(canvas, row, column, text=frame_2)
             canvas.refresh()
 
-            await asyncio.sleep(0)
+            await sleep()
 
             draw_frame(canvas, row, column, text=frame_2, negative=True)
 
@@ -124,23 +130,18 @@ async def animate_spaceship(canvas, row, column, frame_1, frame_2):
 async def blink(canvas, row, column, offset_tic, symbol='*', ):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
-        for _ in range(20):
-            await asyncio.sleep(0)
+        await sleep(20)
 
-        for _ in range(offset_tic):
-            await asyncio.sleep(0)
+        await sleep(offset_tic)
         canvas.addstr(row, column, symbol)
 
-        for _ in range(3):
-            await asyncio.sleep(0)
+        await sleep(3)
 
         canvas.addstr(row, column, symbol, curses.A_BOLD)
-        for _ in range(5):
-            await asyncio.sleep(0)
+        await sleep(5)
 
         canvas.addstr(row, column, symbol)
-        for _ in range(3):
-            await asyncio.sleep(0)
+        await sleep(3)
 
 
 def draw(canvas):
