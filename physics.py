@@ -44,6 +44,7 @@ def update_speed(row_speed, column_speed, rows_direction, columns_direction,
        -1 — if force pulls up
        0  — if force has no effect
        1  — if force pulls down
+
     columns_direction — is a force direction by colums axis. Possible values:
        -1 — if force pulls left
        0  — if force has no effect
